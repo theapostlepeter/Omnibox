@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmniBox</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js" defer></script>
+</head>
+<body>
+
+  <!-- BARRE DE NAVIGATION -->
+  <header class="navbar">
+    <div class="logo">
+      <h1>OmniBox</h1>
+    </div>
+
+    <nav class="nav-links">
+      <button id="nav-home" class="nav-btn active">Accueil</button>
+      <button id="nav-watchlist" class="nav-btn">Ma Liste</button>
+      <button id="nav-profile" class="nav-btn" style="display: none;">Profil</button>
+    </nav>
+
+    <a class="support-btn" href="https://ko-fi.com/thstormdragon" target="_blank" rel="noopener noreferrer">☕ Soutenir le projet</a>
+
+    <!-- UTILISATEUR & NOTIFICATIONS -->
+    <div class="user-section">
+      <button id="login-btn" class="btn-primary">Se connecter</button>
+
+      <div id="user-info" style="display: none;">
+        <!-- Clochette Notifications -->
+        <div class="notification-container">
+          <button id="notif-btn" class="notif-btn">
+            🔔 <span id="notif-badge" class="notif-badge" style="display: none;">0</span>
+          </button>
+          <div id="notif-dropdown" class="notif-dropdown" style="display: none;">
+            <h4>Demandes d'amis</h4>
+            <div id="friend-requests-list">
+              <p class="empty-msg">Aucune demande en attente.</p>
+            </div>
+          </div>
+        </div>
+
+        <img id="header-avatar" class="avatar-small" src="" alt="Avatar">
+        <span id="user-name"></span>
+        <button id="logout-btn" class="btn-secondary">Déconnexion</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- BARRE DE RECHERCHE ET FILTRES CATEGORIES / GENRES (Conteneur ciblé pour masquage sur profil) -->
+  <section id="search-filter-section" class="search-filter-section">
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="Rechercher un film, une série, un anime, un kdrama...">
+      <button id="search-btn" class="btn-primary">Rechercher</button>
+    </div>
+
+    <!-- FILTRES COMBINÉS -->
+    <div class="filter-bar">
+      <div class="filter-group">
+        <label for="category-select">Catégorie :</label>
+        <select id="category-select">
+          <option value="all">Toutes les catégories</option>
+          <option value="movie">Films</option>
+          <option value="tv">Séries</option>
+          <option value="anime">Animes</option>
+          <option value="kdrama">K-Dramas</option>
+          <option value="documentary">Documentaires</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="genre-select">Genre (Sous-catégorie) :</label>
+        <select id="genre-select">
+          <option value="all">Tous les genres</option>
+          <option value="28">Action</option>
+          <option value="12">Aventure</option>
+          <option value="35">Comédie</option>
+          <option value="18">Drame</option>
+          <option value="10749">Romance</option>
+          <option value="27">Horreur</option>
+          <option value="878">Science-Fiction</option>
+          <option value="14">Fantastique</option>
+          <option value="9648">Mystère / Thriller</option>
+          <option value="16">Animation</option>
+        </select>
+      </div>
+
+      <button id="reset-filters-btn" class="btn-secondary">Réinitialiser</button>
+    </div>
+  </section>
+
+  <!-- CONTENU PRINCIPAL -->
+  <main id="main-content-view">
+    <!-- Tendances -->
+    <section id="trending-section">
+      <h2>Tendances</h2>
+      <div id="trending-carousel" class="carousel"></div>
+    </section>
+
+    <!-- Grille Principale -->
+    <section id="popular-section">
+      <h2 id="section-title">Populaires du moment</h2>
+      <div id="media-grid" class="grid"></div>
+    </section>
+
+    <!-- MA LISTE PAR STATUT -->
+    <section id="watchlist" style="display: none;">
+      <h2>Ma Liste</h2>
+
+      <div class="watchlist-category">
+        <h3 class="watchlist-category-title">En cours</h3>
+        <div id="watchlist-watching" class="grid"></div>
+      </div>
+
+      <div class="watchlist-category">
+        <h3 class="watchlist-category-title">À voir</h3>
+        <div id="watchlist-plan-to-watch" class="grid"></div>
+      </div>
+
+      <div class="watchlist-category">
+        <h3 class="watchlist-category-title">Terminé</h3>
+        <div id="watchlist-completed" class="grid"></div>
+      </div>
+
+      <div class="watchlist-category">
+        <h3 class="watchlist-category-title">Abandonné</h3>
+        <div id="watchlist-dropped" class="grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- VUE PROFIL -->
+  <section id="profile-view" style="display: none;">
+    <div class="profile-card">
+      <img id="profile-avatar" class="avatar-large" src="" alt="Avatar profil">
+      <h2 id="profile-display-name"></h2>
+      <p id="profile-bio"></p>
+
+      <!-- Réseaux Sociaux (Accès Conditionnel) -->
+      <div class="social-links">
+        <button id="profile-x-btn" class="btn-social" style="display: none;">📱 X (Twitter)</button>
+        <button id="profile-discord-btn" class="btn-social" style="display: none;">💬 Discord</button>
+      </div>
+
+      <!-- Actions Profil -->
+      <div class="profile-actions">
+        <button id="edit-profile-btn" class="btn-secondary" style="display: none;">Éditer le profil</button>
+        <button id="add-friend-btn" class="btn-primary" style="display: none;">+ Add Friend</button>
+      </div>
+
+      <!-- Formulaire Édition -->
+      <div id="edit-profile-form" style="display: none;">
+        <h3>Modifier le profil</h3>
+        <input type="text" id="edit-username" placeholder="Pseudo">
+
+        <div class="profile-image-selector-container">
+          <div class="photo-source-toggle" id="photo-source-toggle">
+            <button type="button" class="photo-source-tab active" data-photo-source="file">Fichier Local</button>
+            <button type="button" class="photo-source-tab" data-photo-source="url">URL Web</button>
+          </div>
+
+          <div class="photo-source-panel-wrap">
+            <div class="photo-source-panel" id="photo-file-panel">
+              <input type="file" id="edit-photo-file" accept="image/*">
+            </div>
+            <div class="photo-source-panel" id="photo-url-panel" style="display: none;">
+              <input type="text" id="edit-photo-url" placeholder="URL de la photo">
+            </div>
+          </div>
+        </div>
+
+        <textarea id="edit-bio" placeholder="Biographie"></textarea>
+        <input type="text" id="edit-x" placeholder="Lien ou Pseudo X">
+        <input type="text" id="edit-discord" placeholder="Pseudo Discord">
+        <div class="profile-form-buttons">
+          <button id="save-profile-btn" class="btn-primary">Sauvegarder</button>
+          <button id="cancel-profile-btn" class="btn-secondary">Annuler</button>
+        </div>
+      </div>
+
+      <!-- TABLEAU DE SCORE ET STATISTIQUES DÉTAILLÉES -->
+      <div class="stats-box">
+        <h3>Tableau des Visionnages</h3>
+        <div class="profile-stats-grid">
+          <div class="stat-card">
+            <span id="stat-films" class="stat-count">0</span>
+            <span class="stat-label">Films</span>
+          </div>
+          <div class="stat-card">
+            <span id="stat-series" class="stat-count">0</span>
+            <span class="stat-label">Séries</span>
+          </div>
+          <div class="stat-card">
+            <span id="stat-animes" class="stat-count">0</span>
+            <span class="stat-label">Animes</span>
+          </div>
+          <div class="stat-card">
+            <span id="stat-kdramas" class="stat-count">0</span>
+            <span class="stat-label">K-Dramas</span>
+          </div>
+          <div class="stat-card">
+            <span id="stat-docs" class="stat-count">0</span>
+            <span class="stat-label">Documentaires</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Coups de Cœur -->
+      <div class="favorites-section">
+        <h3>Mes Coups de Cœur</h3>
+        <div id="favorites-grid" class="grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODALE DÉTAILS AVEC COMMENTAIRES -->
+  <div id="detail-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span id="close-modal" class="close">&times;</span>
+      <div class="modal-body">
+        <img id="modal-img" src="" alt="Affiche">
+        <div class="modal-details">
+          <h2 id="modal-title"></h2>
+          <p id="modal-rating"></p>
+          <p id="modal-description"></p>
+
+          <!-- Liens de Streaming / Regarder -->
+          <div class="streaming-links-container">
+            <h4>Où regarder :</h4>
+            <div id="provider-list" class="provider-buttons"></div>
+          </div>
+
+          <div class="user-rating-section">
+            <p><strong>Ta note :</strong></p>
+            <div class="star-rating" id="user-star-rating">
+              <span class="star" data-value="1">★</span>
+              <span class="star" data-value="2">★</span>
+              <span class="star" data-value="3">★</span>
+              <span class="star" data-value="4">★</span>
+              <span class="star" data-value="5">★</span>
+            </div>
+            <span id="rating-value-display">Note ce contenu</span>
+          </div>
+
+          <!-- Actions de suivi & Favoris -->
+          <div class="modal-actions-bar">
+            <button id="modal-add-btn" class="btn-primary">+ Ajouter à Ma Liste</button>
+            <button id="modal-favorite-btn" class="btn-fav">❤️ Coup de cœur</button>
+          </div>
+
+          <!-- Selecteur de Statut -->
+          <div id="user-tracking-section" style="display: none;">
+            <label for="media-status-select">Statut de visionnage :</label>
+            <select id="media-status-select">
+              <option value="watching">En cours</option>
+              <option value="plan_to_watch">À voir</option>
+              <option value="completed">Terminé</option>
+              <option value="dropped">Abandonné</option>
+            </select>
+
+            <div id="media-progress-section" class="media-progress-section" style="display: none;">
+              <div class="progress-field">
+                <label for="current-season">Saison actuelle</label>
+                <input id="current-season" type="number" min="1" step="1" placeholder="1">
+              </div>
+              <div class="progress-field">
+                <label for="current-episode">Épisode actuel</label>
+                <input id="current-episode" type="number" min="0" step="1" placeholder="1">
+              </div>
+              <p id="episode-progress-display" class="episode-progress-display"></p>
+              <button id="save-progress-btn" class="btn-secondary" type="button">Enregistrer la progression</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION COMMENTAIRES -->
+      <div class="comments-section">
+        <h3>Espace Commentaires</h3>
+        
+        <div id="add-comment-box" class="add-comment-box">
+          <textarea id="comment-input" placeholder="Écrire un commentaire publique..."></textarea>
+          <button id="submit-comment-btn" class="btn-primary">Publier</button>
+        </div>
+
+        <div id="comments-list" class="comments-list">
+          <p class="empty-msg">Aucun commentaire pour l'instant.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="auth-modal" class="modal" style="display: none;">
+    <div class="auth-modal-content">
+      <button id="close-auth-modal" class="close" type="button" aria-label="Fermer">&times;</button>
+      <h2>Connexion</h2>
+      <p>Connecte-toi pour gérer ta liste et ta progression.</p>
+      <div class="auth-provider-buttons">
+        <button id="google-login-btn" class="auth-provider-btn google-login-btn" type="button">Continuer avec Google</button>
+        <button id="discord-login-btn" class="auth-provider-btn discord-login-btn" type="button">Continuer avec Discord</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
